@@ -1,4 +1,4 @@
-from random import choice
+import random
 
 
 def open_and_read_file(file_path):
@@ -32,11 +32,13 @@ def make_chains(text_string):
     
     chains = {}
 
-    for i in range(len(text) - 2):
-        value = chains.get((text[i], text[i + 1]), [])
-        value.append(text[i + 2])
-        chains[(text[i], text[i + 1])] = value
-
+    for i in range(len(text) - 1):
+        try:
+            value = chains.get((text[i], text[i + 1]), [])
+            value.append(text[i + 2])
+            chains[(text[i], text[i + 1])] = value
+        except IndexError:
+            break
 
         # if value == []:
         #     print ("found an empty value for tuple", word_tuple)
@@ -48,17 +50,28 @@ def make_chains(text_string):
         #     chains[word_tuple] = new_value
             
 
-    print chains
+    return chains
 
 
 def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
+    
+    current_key = random.choice(chains.keys())
     text = ""
+    key_text = " ".join(current_key)
+    text = key_text
 
-    # your code goes here
+    print current_key
+    while True:
+        try: 
+            string = random.choice(chains[current_key])
+            text = "{} {}".format(text, string)
+            new_key = (current_key[1], string)
+            current_key = new_key
 
-    return text
+        except KeyError:
+            return text
 
 
 input_path = "green-eggs.txt"
