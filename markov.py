@@ -117,11 +117,11 @@ def make_text(chains):
 
 # input_path = "hello.txt"
 input_path_1 = sys.argv[1]
-# input_path_2 = sys.argv[2]
-n = int(sys.argv[2])
+input_path_2 = sys.argv[2]
+n = int(sys.argv[3])
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path_1)
+input_text = open_and_read_file(input_path_1, input_path_2)
 
 # Get a Markov chain
 chains = make_chains(input_text, n)
