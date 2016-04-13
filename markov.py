@@ -1,14 +1,17 @@
 from random import choice
 import sys
 
-def open_and_read_file(file_path):
+def open_and_read_file(file_path_1, file_path_2 = 0):
     """Takes file path as string; returns text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    text = open(file_path).read()
+    text = open(file_path_1).read()
+    if file_path_2 != 0:
+
+        text = text + open(file_path_2).read()
 
     return text
 
@@ -61,8 +64,7 @@ def make_chains(text_string, n=2):
         #     new_value = chains[word_tuple].append(add_value)
         #     print ("adding value", new_value, "for key", word_tuple)            
         #     chains[word_tuple] = new_value
-            
-    print chains
+
     return chains
 
 
@@ -71,17 +73,29 @@ def make_text(chains):
 
     
     current_key = choice(chains.keys())
+    
+    while current_key[0][0].istitle() == False:
+        current_key = choice(chains.keys())
+
     text = " ".join(current_key)
 
+    punctuation = ['.', '?', '!']
 
-    while True:
+    while text[-1] not in punctuation:
         if current_key in chains:
             string = choice(chains[current_key])
             text = "{} {}".format(text, string)
-            current_key = (current_key[1], string)
+            current_key = list(current_key[1:])
+            current_key.append(string)
+            current_key = tuple(current_key)
+
+        # elif text[-1] in punctuation:
+        #     return text 
 
         else:
-            return text
+            return "Not enough key-value options. Please try again (consider changing your n-input)"
+    
+    return text
 
     # while len(text) < 20:
 
@@ -102,11 +116,12 @@ def make_text(chains):
       
 
 # input_path = "hello.txt"
-input_path = sys.argv[1]
+input_path_1 = sys.argv[1]
+# input_path_2 = sys.argv[2]
 n = int(sys.argv[2])
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+input_text = open_and_read_file(input_path_1)
 
 # Get a Markov chain
 chains = make_chains(input_text, n)
