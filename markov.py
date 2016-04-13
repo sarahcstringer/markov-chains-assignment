@@ -1,4 +1,4 @@
-import random
+from random import choice
 
 
 def open_and_read_file(file_path):
@@ -32,13 +32,16 @@ def make_chains(text_string):
     
     chains = {}
 
-    for i in range(len(text) - 1):
-        try:
-            value = chains.get((text[i], text[i + 1]), [])
-            value.append(text[i + 2])
-            chains[(text[i], text[i + 1])] = value
-        except IndexError:
-            break
+    for i in range(len(text) - 2):
+        word_pair = (text[i], text[i + 1])
+        chains[word_pair] = chains.get(word_pair, []) + [text[i + 2]]
+
+
+        # word_pair = (text[i], text[i + 1])
+        # value = chains.get(word_pair, [])
+        # value.append(text[i + 2])
+        # chains[word_pair] = value
+
 
         # if value == []:
         #     print ("found an empty value for tuple", word_tuple)
@@ -57,24 +60,28 @@ def make_text(chains):
     """Takes dictionary of markov chains; returns random text."""
 
     
-    current_key = random.choice(chains.keys())
-    text = ""
-    key_text = " ".join(current_key)
-    text = key_text
-
-    print current_key
+    current_key = choice(chains.keys())
+    text = " ".join(current_key)
+    
     while True:
-        try: 
-            string = random.choice(chains[current_key])
+        if current_key in chains:
+            string = choice(chains[current_key])
             text = "{} {}".format(text, string)
-            new_key = (current_key[1], string)
-            current_key = new_key
+            current_key = (current_key[1], string)
 
-        except KeyError:
+        else:
             return text
 
 
-input_path = "green-eggs.txt"
+        # if current_key not in chains:
+        #     return text
+
+        # string = choice(chains[current_key])
+        # text = "{} {}".format(text, string)
+        # current_key = (current_key[1], string)
+      
+
+input_path = "gettysburg.txt"
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
